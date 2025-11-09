@@ -6,11 +6,11 @@ export class DocsController {
   @Render('index')
   getDocs() {
     return {
-      title: 'API LCA Students - Documentação',
+      title: 'API LCE Students - Documentação',
       routes: [
         {
           method: 'POST',
-          path: '/lca-students/import',
+          path: '/lce-students/import',
           description: 'Importar estudantes a partir de arquivo XLSX',
           parameters: [
             {
@@ -21,7 +21,7 @@ export class DocsController {
             },
           ],
           example: {
-            request: `curl -X POST http://localhost:3000/lca-students/import \\
+            request: `curl -X POST http://localhost:3000/lce-students/import \\
                      -F "file=@estudantes.xlsx"`,
             response: `{
   "message": "Importação concluída",
@@ -32,34 +32,62 @@ export class DocsController {
         },
         {
           method: 'POST',
-          path: '/lca-students/import-base64',
-          description: 'Importar estudantes a partir de arquivo XLSX em base64',
+          path: '/general-students/import',
+          description: 'Importar estudantes a partir de arquivo XLSX',
           parameters: [
             {
-              name: 'fileBase64',
-              type: 'string',
+              name: 'file',
+              type: 'FormData',
               required: true,
-              description: 'Arquivo XLSX codificado em base64',
-            },
-            {
-              name: 'fileName',
-              type: 'string',
-              required: false,
-              description: 'Nome do arquivo (opcional)',
+              description: 'Arquivo XLSX com colunas Documento e Email',
             },
           ],
           example: {
-            request: `curl -X POST http://localhost:3000/lca-students/import-base64 \\
-                     -H "Content-Type: application/json" \\
-                     -d '{
-                       "fileBase64": "UEsDBBQAAAAIA...",
-                       "fileName": "estudantes.xlsx"
-                     }'`,
+            request: `curl -X POST http://localhost:3000/general-students/import \\
+                     -F "file=@estudantes.xlsx"`,
             response: `{
   "message": "Importação concluída",
   "success": 15,
   "skipped": 3
 }`,
+          },
+        },
+        {
+          method: 'GET',
+          path: '/lce-students/verify/?document={document}',
+          description:
+            'Verificar se documento existe na base de estudantes lce',
+          parameters: [
+            {
+              name: 'document',
+              type: 'URL Parameter',
+              required: true,
+              description: 'CPF, email ou CNPJ',
+            },
+          ],
+          example: {
+            request:
+              'curl http://localhost:3000/lce-students/verify/?document=ola@oi.com',
+            response: '{ "exists": true, documenType: "email" }',
+          },
+        },
+        {
+          method: 'GET',
+          path: '/general-students/verify/?document={document}',
+          description:
+            'Verificar se documento existe na base de estudantes geral',
+          parameters: [
+            {
+              name: 'document',
+              type: 'URL Parameter',
+              required: true,
+              description: 'CPF, email ou CNPJ',
+            },
+          ],
+          example: {
+            request:
+              'curl http://localhost:3000/general-students/verify/?document=12345678900',
+            response: '{ "exists": true, documenType: "cpf" }',
           },
         },
         {
