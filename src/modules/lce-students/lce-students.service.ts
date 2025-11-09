@@ -1,8 +1,13 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as XLSX from 'xlsx';
 import { LceStudents } from './lce-students.entity';
+import { DocumentProcessor } from 'src/shared/document-processor';
 
 interface StudentRow {
   'E-mail'?: string;
@@ -14,7 +19,38 @@ export class LceStudentsService {
   constructor(
     @InjectRepository(LceStudents)
     private readonly lceStudentsRepository: Repository<LceStudents>,
+    private readonly documentProcessor: DocumentProcessor,
   ) {}
+  async verifyDocumentExists(
+    document: string,
+  ): Promise<{ exists: boolean, documentType: string } | undefined> {
+    const documentProcessed = this.documentProcessor.processDocument(document);
+
+    if (documentProcessed.type === 'invalid') {
+      throw new BadRequestException('Documento inválido');
+    }
+
+    if (documentProcessed.type === 'cpf' || documentProcessed.type === 'cnpj') {
+      const documentFound = await this.lceStudentsRepository.findOne({
+        where: { cpf: documentProcessed.value },
+      });
+
+      if (documentFound) {
+        return { exists: true, documentType: documentProcessed.type };
+      }
+    }
+
+    if (documentProcessed.type === 'email') {
+      const documentFound = await this.lceStudentsRepository.findOne({
+        where: { email: documentProcessed.value },
+      });
+
+      if (documentFound) {
+        return { exists: true, documentType: documentProcessed.type };
+      }
+    }
+    throw new NotFoundException('Document not found');
+  }
 
   async importLceStudentsFromXlsx(
     file: Express.Multer.File,

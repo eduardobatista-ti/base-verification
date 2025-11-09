@@ -4,6 +4,7 @@ import { LceStudentsModule } from './modules/lce-students/lce-students.module';
 import { ConfigModule } from '@nestjs/config';
 import { GeneralStudentsModule } from './modules/general-students/general-students.module';
 import { DocsController } from './docs.controller';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { DocsController } from './docs.controller';
     } as TypeOrmModuleOptions),
     LceStudentsModule,
     GeneralStudentsModule,
+    SharedModule,
   ],
   controllers: [DocsController],
   providers: [],

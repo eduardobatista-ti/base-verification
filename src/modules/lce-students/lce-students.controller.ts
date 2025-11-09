@@ -1,6 +1,8 @@
 import {
   Controller,
+  Get,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -10,6 +12,11 @@ import { FileInterceptor } from '@nestjs/platform-express';
 @Controller('lce-students')
 export class LceStudentsController {
   constructor(private readonly lceStudentsService: LceStudentsService) {}
+
+  @Get('verify')
+  async verifyDocument(@Query('document') document: string) {
+    return await this.lceStudentsService.verifyDocumentExists(document);
+  }
 
   @Post('import')
   @UseInterceptors(FileInterceptor('file'))

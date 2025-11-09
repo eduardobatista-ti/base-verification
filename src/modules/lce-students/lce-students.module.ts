@@ -3,9 +3,10 @@ import { LceStudentsService } from './lce-students.service';
 import { LceStudentsController } from './lce-students.controller';
 import { LceStudents } from './lce-students.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SharedModule } from 'src/shared/shared.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([LceStudents])],
+  imports: [SharedModule, TypeOrmModule.forFeature([LceStudents])],
   controllers: [LceStudentsController],
   providers: [LceStudentsService],
 })
