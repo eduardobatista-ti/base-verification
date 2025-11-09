@@ -3,6 +3,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { LceStudentsModule } from './modules/lce-students/lce-students.module';
 import { ConfigModule } from '@nestjs/config';
 import { GeneralStudentsModule } from './modules/general-students/general-students.module';
+import { DocsController } from './docs.controller';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { GeneralStudentsModule } from './modules/general-students/general-studen
     LceStudentsModule,
     GeneralStudentsModule,
   ],
+  controllers: [DocsController],
   providers: [],
 })
 export class AppModule {}

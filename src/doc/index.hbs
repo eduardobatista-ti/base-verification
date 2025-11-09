@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .routes-container {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .route-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .route-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .method {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-right: 10px;
+            color: white;
+        }
+        
+        .method-POST {
+            background: #10b981;
+        }
+        
+        .method-GET {
+            background: #3b82f6;
+        }
+        
+        .path {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+        
+        .description {
+            margin: 15px 0;
+            color: #6b7280;
+            font-size: 1.1rem;
+        }
+        
+        .parameters {
+            margin: 20px 0;
+        }
+        
+        .parameter {
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            background: #f8fafc;
+            border-radius: 5px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .parameter-name {
+            font-weight: bold;
+            color: #1f2937;
+        }
+        
+        .parameter-type {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .parameter-required {
+            color: #ef4444;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+        
+        .parameter-description {
+            color: #6b7280;
+            font-size: 0.95rem;
+            margin-top: 4px;
+        }
+        
+        .example {
+            margin-top: 20px;
+        }
+        
+        .example-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+        
+        .code-block {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: white;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .route-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>{{title}}</h1>
+            <p>Documentação completa das rotas disponíveis na API</p>
+        </div>
+        
+        <div class="routes-container">
+            {{#each routes}}
+            <div class="route-card">
+                <div class="route-header">
+                    <span class="method method-{{this.method}}">{{this.method}}</span>
+                    <span class="path">{{this.path}}</span>
+                </div>
+                
+                <p class="description">{{this.description}}</p>
+                
+                {{#if this.parameters.length}}
+                <div class="parameters">
+                    <strong>Parâmetros:</strong>
+                    {{#each this.parameters}}
+                    <div class="parameter">
+                        <div>
+                            <span class="parameter-name">{{this.name}}</span>
+                            <span class="parameter-type">({{this.type}})</span>
+                            {{#if this.required}}<span class="parameter-required">*obrigatório</span>{{/if}}
+                        </div>
+                        <div class="parameter-description">{{this.description}}</div>
+                    </div>
+                    {{/each}}
+                </div>
+                {{/if}}
+                
+                <div class="example">
+                    <div class="example-title">Exemplo de uso:</div>
+                    <div class="code-block">{{this.example.request}}</div>
+                    <div class="example-title">Resposta:</div>
+                    <div class="code-block">{{this.example.response}}</div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        
+        <div class="footer">
+            <p>API desenvolvida com NestJS • {{currentYear}}</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentYear = new Date().getFullYear();
+            const yearElement = document.querySelector('.footer p');
+            if (yearElement) {
+                yearElement.innerHTML = `API desenvolvida com NestJS • ${currentYear}`;
+            }
+        });
+    </script>
+</body>
+</html>
