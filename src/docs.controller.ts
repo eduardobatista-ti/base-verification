@@ -28,7 +28,7 @@ export class DocsController {
             },
           ],
           example: {
-            request: `curl -X POST http://localhost:3000/lce-students/import \\
+            request: `curl -X POST ${process.env.BASE_URL}/lce-students/import \\
                      -F "file=@estudantes.xlsx"`,
             response: `{
   "message": "Importação concluída",
@@ -57,7 +57,7 @@ export class DocsController {
             },
           ],
           example: {
-            request: `curl -X POST http://localhost:3000/general-students/import \\
+            request: `curl -X POST ${process.env.BASE_URL}/general-students/import \\
                      -F "file=@estudantes.xlsx"`,
             response: `{
   "message": "Importação concluída",
@@ -87,7 +87,7 @@ export class DocsController {
           ],
           example: {
             request:
-              'curl http://localhost:3000/lce-students/verify/ola@oi.com',
+              'curl ${process.env.BASE_URL}/lce-students/verify/ola@oi.com',
             response: '{ "exists": true, documenType: "email" }',
           },
         },
@@ -112,7 +112,7 @@ export class DocsController {
           ],
           example: {
             request:
-              'curl http://localhost:3000/general-students/verify/12345678900',
+              'curl ${process.env.BASE_URL}/general-students/verify/12345678900',
             response: '{ "exists": true, documenType: "cpf" }',
           },
         },
@@ -122,7 +122,7 @@ export class DocsController {
           description: 'Documentação da API (esta página)',
           parameters: [],
           example: {
-            request: 'curl http://localhost:3000/',
+            request: 'curl ${process.env.BASE_URL}/',
             response: 'HTML desta página',
           },
         },
