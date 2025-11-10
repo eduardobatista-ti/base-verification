@@ -1,8 +1,13 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as XLSX from 'xlsx';
 import { GeneralStudents } from './general-students.entity';
+import { DocumentProcessor } from 'src/shared/document-processor';
 
 interface StudentRow {
   Documento?: string;
@@ -14,13 +19,45 @@ export class GeneralStudentsService {
   constructor(
     @InjectRepository(GeneralStudents)
     private readonly generalStudentsRepository: Repository<GeneralStudents>,
+    private readonly documentProcessor: DocumentProcessor,
   ) {}
+
+  async verifyDocumentExists(
+    document: string,
+  ): Promise<{ exists: boolean; documentType: string } | undefined> {
+    const documentProcessed = this.documentProcessor.processDocument(document);
+
+    if (documentProcessed.type === 'invalid') {
+      throw new BadRequestException('Invalid document');
+    }
+
+    if (documentProcessed.type === 'cpf' || documentProcessed.type === 'cnpj') {
+      const documentFound = await this.generalStudentsRepository.findOne({
+        where: { cpf: documentProcessed.value },
+      });
+
+      if (documentFound) {
+        return { exists: true, documentType: documentProcessed.type };
+      }
+    }
+
+    if (documentProcessed.type === 'email') {
+      const documentFound = await this.generalStudentsRepository.findOne({
+        where: { email: documentProcessed.value },
+      });
+
+      if (documentFound) {
+        return { exists: true, documentType: documentProcessed.type };
+      }
+    }
+    throw new NotFoundException('Document not found');
+  }
 
   async importLceStudentsFromXlsx(
     file: Express.Multer.File,
   ): Promise<{ success: number; skipped: number }> {
     if (!file) {
-      throw new BadRequestException('Nenhum arquivo foi enviado');
+      throw new BadRequestException('No file uploaded');
     }
 
     try {
@@ -31,7 +68,7 @@ export class GeneralStudentsService {
       const data = XLSX.utils.sheet_to_json(worksheet) as StudentRow[];
 
       if (data.length === 0) {
-        throw new BadRequestException('O arquivo está vazio');
+        throw new BadRequestException('The uploaded file is empty');
       }
 
       const studentsToInsert: any[] = [];

@@ -27,7 +27,7 @@ export class LceStudentsService {
     const documentProcessed = this.documentProcessor.processDocument(document);
 
     if (documentProcessed.type === 'invalid') {
-      throw new BadRequestException('Documento inválido');
+      throw new BadRequestException('Invalid document');
     }
 
     if (documentProcessed.type === 'cpf' || documentProcessed.type === 'cnpj') {
@@ -56,7 +56,7 @@ export class LceStudentsService {
     file: Express.Multer.File,
   ): Promise<{ success: number; skipped: number }> {
     if (!file) {
-      throw new BadRequestException('Nenhum arquivo foi enviado');
+      throw new BadRequestException('No file uploaded');
     }
 
     try {
@@ -67,7 +67,7 @@ export class LceStudentsService {
       const data = XLSX.utils.sheet_to_json(worksheet) as StudentRow[];
 
       if (data.length === 0) {
-        throw new BadRequestException('O arquivo está vazio');
+        throw new BadRequestException('The uploaded file is empty');
       }
 
       const studentsToInsert: any[] = [];

@@ -11,8 +11,15 @@ export class DocsController {
         {
           method: 'POST',
           path: '/lce-students/import',
-          description: 'Importar estudantes a partir de arquivo XLSX',
+          description:
+            'Importar estudantes a partir de arquivo XLSX (Essa funcionalidade precisa estar habilitada no sistema)',
           parameters: [
+            {
+              name: 'secret',
+              type: 'Header',
+              required: true,
+              description: 'Chave secreta para autenticação da requisição',
+            },
             {
               name: 'file',
               type: 'FormData',
@@ -33,8 +40,15 @@ export class DocsController {
         {
           method: 'POST',
           path: '/general-students/import',
-          description: 'Importar estudantes a partir de arquivo XLSX',
+          description:
+            'Importar estudantes a partir de arquivo XLSX (Essa funcionalidade precisa estar habilitada no sistema)',
           parameters: [
+            {
+              name: 'secret',
+              type: 'Header',
+              required: true,
+              description: 'Chave secreta para autenticação da requisição',
+            },
             {
               name: 'file',
               type: 'FormData',
@@ -54,10 +68,16 @@ export class DocsController {
         },
         {
           method: 'GET',
-          path: '/lce-students/verify/?document={document}',
+          path: '/lce-students/verify/:{document}',
           description:
             'Verificar se documento existe na base de estudantes lce',
           parameters: [
+            {
+              name: 'secret',
+              type: 'Header',
+              required: true,
+              description: 'Chave secreta para autenticação da requisição',
+            },
             {
               name: 'document',
               type: 'URL Parameter',
@@ -67,16 +87,22 @@ export class DocsController {
           ],
           example: {
             request:
-              'curl http://localhost:3000/lce-students/verify/?document=ola@oi.com',
+              'curl http://localhost:3000/lce-students/verify/ola@oi.com',
             response: '{ "exists": true, documenType: "email" }',
           },
         },
         {
           method: 'GET',
-          path: '/general-students/verify/?document={document}',
+          path: '/general-students/verify/:{document}',
           description:
             'Verificar se documento existe na base de estudantes geral',
           parameters: [
+            {
+              name: 'secret',
+              type: 'Header',
+              required: true,
+              description: 'Chave secreta para autenticação da requisição',
+            },
             {
               name: 'document',
               type: 'URL Parameter',
@@ -86,7 +112,7 @@ export class DocsController {
           ],
           example: {
             request:
-              'curl http://localhost:3000/general-students/verify/?document=12345678900',
+              'curl http://localhost:3000/general-students/verify/12345678900',
             response: '{ "exists": true, documenType: "cpf" }',
           },
         },
