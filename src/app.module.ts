@@ -5,10 +5,13 @@ import { ConfigModule } from '@nestjs/config';
 import { GeneralStudentsModule } from './modules/general-students/general-students.module';
 import { DocsController } from './docs.controller';
 import { SharedModule } from './shared/shared.module';
+import { SecretGuard } from './security/secret.guard';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: process.env.DB_TYPE,
       host: process.env.DB_HOST,
@@ -24,6 +27,6 @@ import { SharedModule } from './shared/shared.module';
     SharedModule,
   ],
   controllers: [DocsController],
-  providers: [],
+  providers: [SecretGuard],
 })
 export class AppModule {}
