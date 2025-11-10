@@ -86,8 +86,7 @@ export class DocsController {
             },
           ],
           example: {
-            request:
-              'curl ${process.env.BASE_URL}/lce-students/verify/ola@oi.com',
+            request: `curl ${process.env.BASE_URL}/lce-students/verify/ola@oi.com`,
             response: '{ "exists": true, documenType: "email" }',
           },
         },
@@ -111,8 +110,7 @@ export class DocsController {
             },
           ],
           example: {
-            request:
-              'curl ${process.env.BASE_URL}/general-students/verify/12345678900',
+            request: `curl ${process.env.BASE_URL}/general-students/verify/12345678900`,
             response: '{ "exists": true, documenType: "cpf" }',
           },
         },
@@ -122,7 +120,7 @@ export class DocsController {
           description: 'Documentação da API (esta página)',
           parameters: [],
           example: {
-            request: 'curl ${process.env.BASE_URL}/',
+            request: `curl ${process.env.BASE_URL}/`,
             response: 'HTML desta página',
           },
         },
